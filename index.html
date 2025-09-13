@@ -1,0 +1,141 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aayam Dahal - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+    <div class="container mx-auto p-6 max-w-4xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">Aayam Dahal</h1>
+            <div class="mt-4 flex flex-col sm:flex-row justify-center gap-4 text-gray-700">
+                <p>Email: <a href="mailto:getaayam@gmail.com" class="text-blue-600 hover:underline">getaayam@gmail.com</a></p>
+                <p>Phone: <a href="tel:+15735876700" class="text-blue-600 hover:underline">+1 573-587-6700</a></p>
+                <p>LinkedIn: <a href="https://www.linkedin.com/in/aayamdahal/" target="_blank" class="text-blue-600 hover:underline">linkedin.com/in/aayamdahal</a></p>
+                <p>GitHub: <a href="https://www.github.com/aayamdahal/" target="_blank" class="text-blue-600 hover:underline">github.com/aayamdahal</a></p>
+            </div>
+        </header>
+
+        <!-- Summary -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 border-b-2 border-gray-300 pb-2">Summary</h2>
+            <p class="mt-4 text-gray-700">
+                Full Stack developer and open source enthusiast eager to contribute to team success through hard work, attention to detail, and excellent organizational skills. Currently working with ML/Data, Python, and MSSQL.
+            </p>
+        </section>
+
+        <!-- Skills -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 border-b-2 border-gray-300 pb-2">Skills</h2>
+            <ul class="mt-4 list-disc list-inside text-gray-700">
+                <li><strong>Programming Languages:</strong> JavaScript, TypeScript, Python</li>
+                <li><strong>Web Development Frameworks:</strong> Node.js, Express.js, React.js, Next.js</li>
+                <li><strong>Databases:</strong> MSSQL, MongoDB</li>
+                <li><strong>Agile Methodology:</strong> Jira</li>
+                <li><strong>Other:</strong> Docker, Jenkins, Git</li>
+            </ul>
+        </section>
+
+        <!-- Experiences -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 border-b-2 border-gray-300 pb-2">Experiences</h2>
+            <div class="mt-4">
+                <h3 class="text-xl font-semibold text-gray-900">Software Developer</h3>
+                <p class="text-gray-600">Jun 2022 – Sep 2024 (2yrs 9mos) · General Technology Pvt. Ltd.</p>
+                <h4 class="text-lg font-medium text-gray-800 mt-2">Project(s):</h4>
+                <h5 class="text-md font-medium text-gray-800">PaperBank (Document Management System)</h5>
+                <ul class="list-disc list-inside text-gray-700 ml-4">
+                    <li>Implemented authentication and role-based authorization.</li>
+                    <li>Worked on an AI-powered PDF processing system to extract and validate data.</li>
+                    <li>Designed and optimized database models as per vendor requirements.</li>
+                </ul>
+                <h5 class="text-md font-medium text-gray-800 mt-2">BPM (Business Process Management System)</h5>
+                <ul class="list-disc list-inside text-gray-700 ml-4">
+                    <li>Developed dynamic drag-and-drop form functionalities and workflow creation and document flow modules.</li>
+                    <li>Worked on the Letter of Credit and Bank Guarantee onboarding portal for Global IME Bank, Nepal.</li>
+                    <li>Implemented Maker-checker and role-based access, and added audit trails and reporting using Metabase reporting.</li>
+                    <li>Implemented OCR functionalities utilizing Python.</li>
+                </ul>
+            </div>
+            <div class="mt-4">
+                <h3 class="text-xl font-semibold text-gray-900">Associate Software Developer</h3>
+                <p class="text-gray-600">Jan 2022 – Jun 2022 (6mos) · General Technology Pvt. Ltd.</p>
+                <h4 class="text-lg font-medium text-gray-800 mt-2">Project(s):</h4>
+                <h5 class="text-md font-medium text-gray-800">PaperBank (Document Management System)</h5>
+                <ul class="list-disc list-inside text-gray-700 ml-4">
+                    <li>Implemented file upload and ensured responsive design of the web application.</li>
+                    <li>Designed and implemented custom React components.</li>
+                    <li>Implemented authentication and role-based authorization.</li>
+                    <li>Integrated LDAP for secure, centralized user access.</li>
+                </ul>
+            </div>
+            <h4 class="text-lg font-medium text-gray-800 mt-4">Key Highlights:</h4>
+            <ul class="list-disc list-inside text-gray-700 ml-4">
+                <li>Optimized the BPM performance by implementing lazy loading, caching, and reducing page load times by 50%.</li>
+                <li>Implemented automated build and deployment processes for BPM using Jenkins and Docker, reducing deployment times by 60% and minimizing production issues by 50%.</li>
+            </ul>
+        </section>
+
+        <!-- Education -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 border-b-2 border-gray-300 pb-2">Education</h2>
+            <ul class="mt-4 list-disc list-inside text-gray-700">
+                <li><strong>Master’s Degree in Applied Computer Science</strong>, Southeast Missouri State University - 2025-present</li>
+                <li><strong>Bachelor's Degree in Computer Science & Information Technology</strong>, Sagarmatha College (TU) – 2022</li>
+                <li><strong>+2 (Physics, Computer, Math)</strong>, Trinity International College (NEB) - 2017</li>
+            </ul>
+        </section>
+
+        <!-- References -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-900 border-b-2 border-gray-300 pb-2">References</h2>
+            <ul class="mt-4 list-disc list-inside text-gray-700">
+                <li>Nutan Maraseni (Senior Principal Engineer): <a href="tel:+9779851049374" class="text-blue-600 hover:underline">+977 985-104-9374</a></li>
+                <li>Aryan RajBhandari (Senior Software Engineer): <a href="tel:+9779860046024" class="text-blue-600 hover:underline">+977 986-004-6024</a></li>
+            </ul>
+        </section>
+    </div>
+</body>
+</html>
